@@ -1,25 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext } from "react";
+import "./App.css"
 
-function App() {
+import {
+  LoginLockProvider,
+  LoginLockContext
+} from "./components/LoginLock/LoginLockContext";
+
+
+function UserInfo() {
+  const loginContext = useContext(LoginLockContext);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ margin: "20px" }}>
+      {JSON.stringify(loginContext, null, 2)
+        .split("\n")
+        .map(line => (
+          <pre>{line}</pre>
+        ))}
     </div>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <div>
+      <LoginLockProvider>
+        <h1>Bienvenido :D</h1>
+        {/* <label class="switch">
+          <input type="checkbox" />
+          <span class="slider round"></span>
+        </label> */}
+        <UserInfo />
+        <LoginLockContext.Consumer>
+          {loginContext => (
+            <div>
+              <span>
+                <em>
+                  {loginContext.username} ({loginContext.sessionId}) meee
+                </em>
+              </span>
+              <hr />
+              <button
+                onClick={() => {
+                  loginContext.signOut();
+                }}
+              >
+                Cerrar sesión
+              </button>
+            </div>
+          )}
+        </LoginLockContext.Consumer>
+      </LoginLockProvider>
+    </div>
+  );
+}
